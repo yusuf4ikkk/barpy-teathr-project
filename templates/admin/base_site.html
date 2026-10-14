@@ -1,0 +1,12 @@
+{% extends "admin/base.html" %}
+{% load static %}
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
+{% block extrastyle %}{{ block.super }}
+<link rel="stylesheet" href="{% static 'admin_theme/barpy-admin.css' %}">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="{% static 'img/logo.jpeg' %}">
+{% endblock %}
+{% block branding %}
+<h1 id="site-name"><a href="{% url 'admin:index' %}" class="barpy-brand"><img src="{% static 'img/logo.jpeg' %}" alt=""><span>Театр Барпы<small>панель управления</small></span></a></h1>
+{% endblock %}
+{% block nav-global %}<a class="barpy-site-link" href="/" target="_blank">Открыть сайт ↗</a>{% endblock %}

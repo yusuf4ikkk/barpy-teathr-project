@@ -1,0 +1,4 @@
+<article class="actor reveal">
+    <div class="actor-img">{% if a.photo %}<img src="{{ a.photo.url }}" alt="{{ a.name }}" loading="lazy">{% else %}<div class="initials">{{ a.name|slice:":1" }}</div>{% endif %}</div>
+    <div class="actor-body"><h3>{{ a.name }}</h3><div class="role">{{ a.role }}</div>{% if a.merit %}<div class="merit">{{ a.merit }}</div>{% endif %}</div>
+</article>

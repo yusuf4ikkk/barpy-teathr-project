@@ -1,0 +1,42 @@
+{% extends "admin/index.html" %}
+{% block content %}
+{% if dash %}
+<div class="dash">
+    {% if dash.default_whatsapp %}
+    <div class="dash-warn">⚠ Номер WhatsApp кассы ещё не изменён. <a href="{% url 'admin:theatre_sitesettings_changelist' %}">Укажите настоящий номер в «Настройках сайта»</a> — на него будут приходить заказы.</div>
+    {% endif %}
+    <div class="dash-cards">
+        <a class="dash-card {% if dash.pending %}hot{% endif %}" href="{% url 'admin:theatre_order_changelist' %}?status__exact=new">
+            <span>Ждут оплаты</span><b>{{ dash.pending }}</b><small>заказов в WhatsApp</small>
+        </a>
+        <div class="dash-card"><span>Выручка сегодня</span><b>{{ dash.paid_today }}</b><small>сом</small></div>
+        <div class="dash-card"><span>За 7 дней</span><b>{{ dash.paid_week }}</b><small>сом</small></div>
+        <div class="dash-card"><span>За 30 дней</span><b>{{ dash.paid_month }}</b><small>сом</small></div>
+        <div class="dash-card"><span>Билетов на будущие сеансы</span><b>{{ dash.tickets_upcoming }}</b><small>занято мест</small></div>
+    </div>
+
+    <div class="dash-cols">
+        <section class="dash-box">
+            <h2>Ближайшие сеансы</h2>
+            {% for s in dash.upcoming %}
+            <a class="dash-row" href="{% url 'admin:theatre_session_change' s.pk %}">
+                <div><b>{{ s.performance.title }}</b><small>{{ s.starts_at|date:"j E, H:i" }} · {{ s.hall.name }}</small></div>
+                <div class="bar"><i style="width:{{ s.percent }}%"></i></div>
+                <span>{{ s.sold }}/{{ s.hall.capacity }}</span>
+            </a>
+            {% empty %}<p class="muted">Нет предстоящих сеансов. <a href="{% url 'admin:theatre_session_add' %}">Добавить сеанс</a></p>{% endfor %}
+        </section>
+        <section class="dash-box">
+            <h2>Последние заказы</h2>
+            {% for o in dash.latest %}
+            <a class="dash-row" href="{% url 'admin:theatre_order_change' o.pk %}">
+                <div><b>{{ o.code }} · {{ o.customer_name }}</b><small>{{ o.session.performance.title }} · {{ o.total }} сом</small></div>
+                <span class="pill pill-{{ o.status }}">{{ o.get_status_display }}</span>
+            </a>
+            {% empty %}<p class="muted">Заказов пока нет.</p>{% endfor %}
+        </section>
+    </div>
+</div>
+{% endif %}
+{{ block.super }}
+{% endblock %}

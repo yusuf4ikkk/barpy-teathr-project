@@ -1,0 +1,27 @@
+{% load static %}
+{% with next=p.next_session %}
+<article class="pcard reveal">
+    <div class="pcard-img">
+        {% if p.poster %}<img src="{{ p.poster.url }}" alt="{{ p.title }}" loading="lazy">{% else %}<div class="ph">{{ p.title }}</div>{% endif %}
+        <div class="pcard-tags">
+            {% if p.status == 'premiere' %}<span class="badge badge-premiere">Премьера</span>{% else %}<span></span>{% endif %}
+            <span class="badge">{{ p.age_limit }}</span>
+        </div>
+        {% if next %}<span class="pcard-date"><svg class="i"><use href="#i-cal"/></svg>{{ next.starts_at|date:"j E, H:i" }}</span>{% endif %}
+    </div>
+    <div class="pcard-body">
+        <span class="pcard-genre">{{ p.genre }}</span>
+        <h3 class="pcard-title"><a class="stretch" href="{{ p.get_absolute_url }}">{{ p.title }}</a></h3>
+        <div class="pcard-meta"><span>{{ p.duration }}</span>{% if p.director %}<span>реж. {{ p.director }}</span>{% endif %}</div>
+        <div class="pcard-foot">
+            {% if next %}
+                <div class="pcard-price">от<b>{{ next.price }} сом</b></div>
+                <span class="btn btn-ghost" style="padding:.6rem 1.1rem">Билеты</span>
+            {% else %}
+                <span class="pcard-price">Сеансов пока нет</span>
+                <span class="btn btn-ghost" style="padding:.6rem 1.1rem">Подробнее</span>
+            {% endif %}
+        </div>
+    </div>
+</article>
+{% endwith %}

@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}{{ perf.title }}{% endblock %}
+{% block description %}{{ perf.description|truncatechars:160 }}{% endblock %}
+{% block content %}
+<section class="section page-top">
+    <div class="container">
+        <a href="{% url 'theatre:afisha' %}" class="back"><svg class="i"><use href="#i-back"/></svg> Назад к афише</a>
+        <div class="detail">
+            <div class="detail-poster reveal">{% if perf.poster %}<img src="{{ perf.poster.url }}" alt="{{ perf.title }}">{% else %}<div class="ph">{{ perf.title }}</div>{% endif %}</div>
+            <div>
+                <div style="display:flex;gap:.6rem;align-items:center;flex-wrap:wrap">
+                    <span class="eyebrow" style="margin:0">{{ perf.genre }}</span>
+                    {% if perf.status == 'premiere' %}<span class="badge badge-premiere">Премьера</span>{% endif %}
+                    <span class="badge">{{ perf.age_limit }}</span>
+                </div>
+                <h1 class="gold-text">{{ perf.title }}</h1>
+                <div class="prose">{% for para in perf.description.splitlines %}{% if para.strip %}<p>{{ para }}</p>{% endif %}{% endfor %}</div>
+                <div class="facts">
+                    <div class="fact"><small>Длительность</small><b>{{ perf.duration }}</b></div>
+                    {% if perf.director %}<div class="fact"><small>Режиссёр</small><b>{{ perf.director }}</b></div>{% endif %}
+                    {% if perf.premiere_date %}<div class="fact"><small>Премьера</small><b>{{ perf.premiere_date|date:"j E Y" }}</b></div>{% endif %}
+                </div>
+                {% if cast %}
+                <h2 class="h3">В ролях</h2>
+                <div style="display:flex;flex-wrap:wrap;gap:.5rem">{% for a in cast %}<span class="chip">{{ a.name }}</span>{% endfor %}</div>
+                {% endif %}
+
+                <h2 class="h3" id="sessions">Ближайшие показы</h2>
+                {% if sessions %}
+                <div class="sessions">
+                    {% for s in sessions %}
+                    <div class="session">
+                        <div class="session-date"><b>{{ s.starts_at|date:"j" }}</b><span>{{ s.starts_at|date:"M" }}</span></div>
+                        <div class="session-info">
+                            <b>{{ s.starts_at|date:"l, H:i" }}</b>
+                            <small>{{ s.hall.name }} · {% with f=s.free_count %}{% if f > 0 %}<span class="left">свободно {{ f }}</span>{% else %}мест нет{% endif %}{% endwith %}</small>
+                        </div>
+                        <div class="session-buy">
+                            <span class="price">{{ s.price }} сом</span>
+                            {% if s.free_count > 0 %}<a class="btn btn-gold" href="{% url 'theatre:seats' s.pk %}">Выбрать места</a>{% else %}<span class="btn btn-ghost is-disabled">Продано</span>{% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}<div class="empty">Ближайших сеансов нет. Следите за афишей или напишите кассе в <a class="gold" href="{{ site.whatsapp_link }}">WhatsApp</a>.</div>{% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,8 @@
+<article class="ncard reveal">
+    <div class="ncard-img">{% if n.image %}<img src="{{ n.image.url }}" alt="" loading="lazy">{% else %}<div class="ph">{{ site.theatre_name }}</div>{% endif %}</div>
+    <div class="ncard-body">
+        <div class="ncard-date">{{ n.published_at|date:"j E Y" }}</div>
+        <h3><a class="stretch" href="{{ n.get_absolute_url }}">{{ n.title }}</a></h3>
+        <p>{{ n.excerpt }}</p>
+    </div>
+</article>

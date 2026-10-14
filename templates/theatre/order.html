@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Заказ {{ order.code }}{% endblock %}
+{% block content %}
+<section class="section page-top">
+    <div class="container">
+        <div class="order panel">
+            <div class="order-state">
+                {% if order.status == 'paid' %}
+                    <div class="state-ico ok"><svg class="i"><use href="#i-check"/></svg></div>
+                    <h1>Заказ оплачен — билеты ваши</h1>
+                {% elif order.status == 'new' %}
+                    <div class="state-ico"><svg class="i i-fill" style="stroke:none"><use href="#i-wa"/></svg></div>
+                    <h1>Остался один шаг — напишите кассе в WhatsApp</h1>
+                {% else %}
+                    <div class="state-ico bad"><svg class="i"><use href="#i-x"/></svg></div>
+                    <h1>{% if order.status == 'expired' %}Время брони истекло{% else %}Заказ отменён{% endif %}</h1>
+                {% endif %}
+                <span class="order-code">{{ order.code }}</span>
+            </div>
+
+            <div class="kv">
+                <div><span>Спектакль</span><b>{{ order.session.performance.title }}</b></div>
+                <div><span>Дата и время</span><b>{{ order.session.starts_at|date:"j E Y, H:i" }}</b></div>
+                <div><span>Зал</span><b>{{ order.session.hall.name }}</b></div>
+                <div><span>Места</span><b>{{ order.seats_text }}</b></div>
+                <div><span>Покупатель</span><b>{{ order.customer_name }}, {{ order.phone }}</b></div>
+                <div class="sum"><span>К оплате</span><b class="gold-text">{{ order.total }} сом</b></div>
+            </div>
+
+            {% if order.status == 'new' %}
+                <div class="alert alert-info">Места закреплены за вами. Бронь действует ещё <b id="timer" data-seconds="{{ seconds_left }}">--:--</b>.</div>
+                <a id="waBtn" class="btn btn-wa btn-lg btn-block" href="{{ wa_url }}" target="_blank" rel="noopener" data-auto="{% if fresh %}1{% endif %}" data-key="wa-{{ order.code }}">
+                    <svg class="i i-fill"><use href="#i-wa"/></svg> Открыть чат WhatsApp
+                </a>
+                <p class="fineprint" id="waNote">{% if fresh %}Если чат не открылся автоматически — нажмите кнопку выше.{% endif %}</p>
+                <ol class="howto">
+                    <li>В чате уже подготовлено сообщение с вашим заказом — просто отправьте его кассиру.</li>
+                    <li>Кассир пришлёт реквизиты — оплатите заказ и отправьте чек в чат.</li>
+                    <li>После подтверждения оплаты вы получите билеты. Эта страница тоже обновится.</li>
+                </ol>
+                {% if site.payment_instructions %}<div class="pay-box"><b>Как оплатить:</b><br>{{ site.payment_instructions }}</div>{% endif %}
+                <p class="fineprint">Сохраните номер заказа <b>{{ order.code }}</b> — по нему кассир найдёт вашу бронь.</p>
+            {% elif order.status == 'paid' %}
+                <h2 class="h3" style="margin-top:0">Ваши билеты</h2>
+                {% for t in tickets %}
+                <div class="ticket">
+                    <div class="ticket-seat"><small>Ряд {{ t.row }}</small><b>{{ t.number }}</b><small>место</small></div>
+                    <div class="ticket-info"><b>{{ order.session.performance.title }}</b><small>{{ order.session.starts_at|date:"l, j E Y, H:i" }}</small><small>{{ order.session.hall.name }} · {{ site.address }}</small><small>Заказ {{ order.code }}</small></div>
+                </div>
+                {% endfor %}
+                <p class="fineprint">Покажите эту страницу или номер заказа на входе. Приходите за 30 минут до начала.</p>
+                <button class="btn btn-ghost btn-block no-print" style="margin-top:1rem" onclick="window.print()">Распечатать билеты</button>
+            {% else %}
+                <p class="muted" style="text-align:center;margin-bottom:1.4rem">Места снова доступны другим зрителям. Вы можете оформить новый заказ.</p>
+                <a class="btn btn-gold btn-block" href="{% url 'theatre:seats' order.session.pk %}">Выбрать места заново</a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}
+{% block scripts %}{% load static %}<script src="{% static 'js/order.js' %}" defer></script>{% endblock %}

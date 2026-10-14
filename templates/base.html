@@ -1,0 +1,109 @@
+{% load static %}<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}{{ site.theatre_name }}{% endblock %}{% if not hide_suffix %} — {{ site.theatre_name }}{% endif %}</title>
+    <meta name="description" content="{% block description %}{{ site.tagline }}. Афиша, билеты онлайн, труппа и новости.{% endblock %}">
+    <meta name="theme-color" content="#0b0809">
+    <meta property="og:title" content="{{ site.theatre_name }}">
+    <meta property="og:description" content="{{ site.tagline }}">
+    <link rel="icon" href="{% static 'img/logo.jpeg' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@500;600;700;800&display=swap&subset=cyrillic" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/site.css' %}">
+    {% block head %}{% endblock %}
+</head>
+<body>
+{% include "theatre/_icons.html" %}
+{% url 'theatre:home' as u_home %}{% url 'theatre:afisha' as u_afisha %}{% url 'theatre:about' as u_about %}
+{% url 'theatre:troupe' as u_troupe %}{% url 'theatre:news' as u_news %}{% url 'theatre:contacts' as u_contacts %}
+
+<header class="header" id="header">
+    <div class="container">
+        <a href="{{ u_home }}" class="brand" aria-label="{{ site.theatre_name }} — на главную">
+            <img src="{% static 'img/logo.jpeg' %}" alt="">
+            <span><b>{{ site.theatre_name }}</b><small>с {{ site.founded_year }} года</small></span>
+        </a>
+        <nav class="nav" aria-label="Основное меню">
+            <a href="{{ u_home }}" class="{% if request.path == u_home %}is-active{% endif %}">Главная</a>
+            <a href="{{ u_afisha }}" class="{% if '/afisha' in request.path or '/seans' in request.path %}is-active{% endif %}">Афиша</a>
+            <a href="{{ u_about }}" class="{% if request.path == u_about %}is-active{% endif %}">О театре</a>
+            <a href="{{ u_troupe }}" class="{% if request.path == u_troupe %}is-active{% endif %}">Труппа</a>
+            <a href="{{ u_news }}" class="{% if '/novosti' in request.path %}is-active{% endif %}">Новости</a>
+            <a href="{{ u_contacts }}" class="{% if request.path == u_contacts %}is-active{% endif %}">Контакты</a>
+        </nav>
+        <a href="{{ u_afisha }}" class="btn btn-gold header-cta">Купить билет</a>
+        <button class="burger" id="burger" aria-label="Открыть меню" aria-expanded="false"><svg class="i"><use href="#i-menu"/></svg></button>
+    </div>
+</header>
+
+<div class="drawer" id="drawer" aria-hidden="true">
+    <div class="drawer-top">
+        <span class="serif gold-text" style="font-size:1.5rem">{{ site.theatre_name }}</span>
+        <button class="burger" id="drawerClose" aria-label="Закрыть меню"><svg class="i"><use href="#i-close"/></svg></button>
+    </div>
+    <a class="link" href="{{ u_home }}">Главная</a>
+    <a class="link" href="{{ u_afisha }}">Афиша</a>
+    <a class="link" href="{{ u_about }}">О театре</a>
+    <a class="link" href="{{ u_troupe }}">Труппа</a>
+    <a class="link" href="{{ u_news }}">Новости</a>
+    <a class="link" href="{{ u_contacts }}">Контакты</a>
+    <a class="btn btn-gold btn-lg" href="{{ u_afisha }}">Купить билет</a>
+</div>
+
+{% if messages %}
+<div class="messages">{% for m in messages %}<div class="alert alert-{% if m.tags == 'error' %}error{% else %}info{% endif %}">{{ m }}</div>{% endfor %}</div>
+{% endif %}
+
+<main>{% block content %}{% endblock %}</main>
+
+<footer class="footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div>
+                <a href="{{ u_home }}" class="brand" style="margin-bottom:1rem">
+                    <img src="{% static 'img/logo.jpeg' %}" alt="">
+                    <span><b>{{ site.theatre_name }}</b></span>
+                </a>
+                <p>{{ site.tagline }}</p>
+            </div>
+            <div>
+                <h4>Разделы</h4>
+                <ul>
+                    <li><a href="{{ u_afisha }}">Афиша</a></li>
+                    <li><a href="{{ u_about }}">О театре</a></li>
+                    <li><a href="{{ u_troupe }}">Труппа</a></li>
+                    <li><a href="{{ u_news }}">Новости</a></li>
+                    <li><a href="{% url 'theatre:rules' %}">Правила посещения</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Касса</h4>
+                <ul>
+                    <li><a href="tel:{{ site.phone }}">{{ site.phone }}</a></li>
+                    <li>{{ site.work_hours }}</li>
+                    <li>{{ site.address }}</li>
+                    {% if site.email %}<li><a href="mailto:{{ site.email }}">{{ site.email }}</a></li>{% endif %}
+                </ul>
+            </div>
+            <div>
+                <h4>Билеты в WhatsApp</h4>
+                <p style="margin-bottom:1rem">Выберите места на сайте — оформим заказ и оплату в чате.</p>
+                <a class="btn btn-wa" href="{{ site.whatsapp_link }}" target="_blank" rel="noopener"><svg class="i i-fill"><use href="#i-wa"/></svg> Написать</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>© {% now "Y" %} {{ site.theatre_name }}. Все права защищены.</span>
+            <span>{{ site.address }}</span>
+        </div>
+    </div>
+</footer>
+
+<a class="wa-float" href="{{ site.whatsapp_link }}" target="_blank" rel="noopener" aria-label="Написать в WhatsApp"><svg class="i i-fill"><use href="#i-wa"/></svg></a>
+
+<script src="{% static 'js/site.js' %}" defer></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

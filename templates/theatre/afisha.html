@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Афиша{% endblock %}
+{% block content %}
+<section class="section page-top">
+    <div class="container">
+        <div class="section-head"><span class="eyebrow">Репертуар</span><h1>Афиша спектаклей</h1>{% include "theatre/_orn.html" %}</div>
+        <nav class="tabs" aria-label="Фильтр афиши">
+            <a href="?status=current" class="{% if status == 'current' %}is-active{% endif %}">В репертуаре</a>
+            <a href="?status=premiere" class="{% if status == 'premiere' %}is-active{% endif %}">Премьеры</a>
+            <a href="?status=archive" class="{% if status == 'archive' %}is-active{% endif %}">Архив</a>
+            <a href="?status=all" class="{% if status == 'all' %}is-active{% endif %}">Все</a>
+        </nav>
+        {% if performances %}<div class="grid grid-cards">{% for p in performances %}{% include "theatre/_card.html" %}{% endfor %}</div>
+        {% else %}<div class="empty">В этом разделе пока ничего нет.</div>{% endif %}
+    </div>
+</section>
+{% endblock %}

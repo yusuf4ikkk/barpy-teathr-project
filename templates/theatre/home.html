@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}{{ site.theatre_name }}{% endblock %}
+{% block content %}
+<section class="hero" id="hero">
+    <span class="hero-line l"></span><span class="hero-line r"></span>
+    {% for p in hero %}
+    {% with next=p.next_session %}
+    <div class="hero-slide {% if forloop.first %}is-active{% endif %}">
+        <div class="hero-bg" style="background-image:url('{% if p.cover %}{{ p.cover.url }}{% elif p.poster %}{{ p.poster.url }}{% else %}{% static 'img/stage-1.jpg' %}{% endif %}')"></div>
+        <div class="hero-content"><div class="container"><div class="hero-text">
+            <span class="eyebrow">{% if p.status == 'premiere' %}Премьера сезона{% else %}{{ p.genre }}{% endif %}</span>
+            <h1 class="hero-title gold-text">{{ p.title }}</h1>
+            <p class="lead">{{ p.description }}</p>
+            <div class="hero-meta">
+                <span><svg class="i"><use href="#i-clock"/></svg>{{ p.duration }}</span>
+                <span class="badge">{{ p.age_limit }}</span>
+                {% if next %}<span><svg class="i"><use href="#i-cal"/></svg>{{ next.starts_at|date:"j E, H:i" }}</span>{% endif %}
+            </div>
+            <div class="hero-actions">
+                {% if next %}<a class="btn btn-gold btn-lg" href="{% url 'theatre:seats' next.pk %}">Выбрать места</a>{% endif %}
+                <a class="btn btn-ghost btn-lg" href="{{ p.get_absolute_url }}">Подробнее</a>
+            </div>
+        </div></div></div>
+    </div>
+    {% endwith %}
+    {% empty %}
+    <div class="hero-slide is-active">
+        <div class="hero-bg" style="background-image:url('{% static 'img/stage-1.jpg' %}')"></div>
+        <div class="hero-content">
+            <div class="container"><div class="hero-text">
+                <span class="eyebrow">Добро пожаловать</span>
+                <h1 class="hero-title gold-text">{{ site.theatre_name }}</h1>
+                <p class="lead">{{ site.tagline }}</p>
+                <div class="hero-actions"><a class="btn btn-gold btn-lg" href="{% url 'theatre:afisha' %}">Афиша</a></div>
+            </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    {% if hero|length > 1 %}
+    <div class="hero-dots">{% for p in hero %}<button class="{% if forloop.first %}is-active{% endif %}" aria-label="Слайд {{ forloop.counter }}"></button>{% endfor %}</div>
+    {% endif %}
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="section-head reveal"><span class="eyebrow">Расписание</span><h2>Ближайшие спектакли</h2>{% include "theatre/_orn.html" %}</div>
+        {% if upcoming %}
+        <div class="grid grid-cards">{% for p in upcoming %}{% include "theatre/_card.html" %}{% endfor %}</div>
+        {% else %}<div class="empty">Скоро здесь появятся новые показы. Загляните в <a class="gold" href="{% url 'theatre:afisha' %}">афишу</a>.</div>{% endif %}
+        <div style="text-align:center;margin-top:2.5rem" class="reveal"><a class="btn btn-ghost" href="{% url 'theatre:afisha' %}">Вся афиша <svg class="i"><use href="#i-arrow"/></svg></a></div>
+    </div>
+</section>
+
+<section class="section section-alt">
+    <div class="container">
+        <div class="section-head reveal"><span class="eyebrow">Как купить билет</span><h2>Три шага до театра</h2>{% include "theatre/_orn.html" %}</div>
+        <div class="stats">
+            <div class="stat reveal"><b class="gold-text">1</b><span>Выберите спектакль и места на схеме зала</span></div>
+            <div class="stat reveal"><b class="gold-text">2</b><span>Нажмите «Оформить» — откроется чат WhatsApp с кассой</span></div>
+            <div class="stat reveal"><b class="gold-text">3</b><span>Оплатите по реквизитам и получите билет в чат</span></div>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container split">
+        <div class="reveal">
+            <span class="eyebrow">О театре</span>
+            <h2 class="serif" style="font-size:clamp(2rem,4.5vw,3rem);line-height:1.15;margin-bottom:1.3rem">С {{ site.founded_year }} года на сцене</h2>
+            <div class="prose">{% for para in site.about_paragraphs|slice:":2" %}<p>{{ para }}</p>{% endfor %}</div>
+            <a class="btn btn-ghost" href="{% url 'theatre:about' %}" style="margin-top:.6rem">Подробнее о театре</a>
+        </div>
+        <div class="photo-frame reveal">
+            <img src="{% if site.about_image %}{{ site.about_image.url }}{% else %}{% static 'img/stage-2.jpg' %}{% endif %}" alt="Сцена театра" loading="lazy">
+        </div>
+    </div>
+</section>
+
+{% if news %}
+<section class="section section-alt">
+    <div class="container">
+        <div class="section-head reveal"><span class="eyebrow">Будьте в курсе</span><h2>Новости театра</h2>{% include "theatre/_orn.html" %}</div>
+        <div class="grid grid-news">{% for n in news %}{% include "theatre/_news_card.html" %}{% endfor %}</div>
+    </div>
+</section>
+{% endif %}
+
+<section class="section">
+    <div class="container split">
+        <div class="reveal">
+            <span class="eyebrow">Контакты</span>
+            <h2 class="serif" style="font-size:clamp(2rem,4.5vw,3rem);margin-bottom:1.8rem">Посетите нас</h2>
+            {% include "theatre/_contact_items.html" %}
+        </div>
+        <div class="reveal">{% include "theatre/_map.html" %}</div>
+    </div>
+</section>
+{% endblock %}

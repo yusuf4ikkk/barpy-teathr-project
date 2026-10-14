@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Контакты{% endblock %}
+{% block content %}
+<section class="section page-top"><div class="container">
+    <div class="section-head"><span class="eyebrow">Связь</span><h1>Контакты</h1>{% include "theatre/_orn.html" %}</div>
+    <div class="split" style="align-items:stretch">
+        <div class="reveal">
+            <div class="panel" style="margin-bottom:1.4rem">{% include "theatre/_contact_items.html" %}</div>
+            <div class="panel">
+                <h3 class="serif" style="margin-bottom:1rem">Написать в WhatsApp</h3>
+                <p class="muted" style="margin-bottom:1.1rem">Подскажем по репертуару, билетам и оплате.</p>
+                <a class="btn btn-wa" href="{{ site.whatsapp_link }}" target="_blank" rel="noopener"><svg class="i i-fill"><use href="#i-wa"/></svg> Открыть чат</a>
+                <div class="socials" style="margin-top:1.4rem">
+                    {% if site.instagram %}<a href="{{ site.instagram }}" target="_blank" rel="noopener" aria-label="Instagram"><svg class="i"><use href="#i-ig"/></svg></a>{% endif %}
+                    {% if site.telegram %}<a href="{{ site.telegram }}" target="_blank" rel="noopener" aria-label="Telegram"><svg class="i"><use href="#i-tg"/></svg></a>{% endif %}
+                    {% if site.youtube %}<a href="{{ site.youtube }}" target="_blank" rel="noopener" aria-label="YouTube"><svg class="i"><use href="#i-yt"/></svg></a>{% endif %}
+                    {% if site.facebook %}<a href="{{ site.facebook }}" target="_blank" rel="noopener" aria-label="Facebook"><svg class="i"><use href="#i-fb"/></svg></a>{% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="reveal">{% include "theatre/_map.html" %}</div>
+    </div>
+</div></section>
+{% endblock %}

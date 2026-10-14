@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Выбор мест — {{ perf.title }}{% endblock %}
+{% block content %}
+<section class="section page-top" style="padding-bottom:3rem">
+    <div class="container">
+        <a href="{{ perf.get_absolute_url }}" class="back"><svg class="i"><use href="#i-back"/></svg> К спектаклю</a>
+        <ol class="steps">
+            <li class="on"><b>1</b> Выбор мест</li><li><b>2</b> Чат WhatsApp</li><li><b>3</b> Оплата</li><li><b>4</b> Билет</li>
+        </ol>
+        {% if not session.is_bookable %}<div class="alert alert-error">Продажа билетов на этот сеанс закрыта.</div>{% endif %}
+        <form method="post" id="seatForm" class="seats-layout" novalidate
+              data-price="{{ session.price }}" data-max="{{ max_seats }}" data-poll="{% url 'theatre:taken_seats' session.pk %}">
+            {% csrf_token %}
+            <div class="panel">
+                <div class="seats-head">
+                    <h1>{{ perf.title }}</h1>
+                    <p>{{ session.starts_at|date:"l, j E, H:i" }} · {{ hall.name }}</p>
+                </div>
+                <div class="stage">Сцена</div>
+                <div class="hall-scroll">
+                    <div class="hall" id="hall" role="group" aria-label="Схема зала">
+                        {% for row in grid %}
+                        <div class="hall-row"><span class="rn">{{ row.number }}</span>
+                            {% for seat in row.seats %}
+                            <label class="seat{% if seat.aisle %} aisle{% endif %}" title="Ряд {{ seat.row }}, место {{ seat.num }}">
+                                <input type="checkbox" name="seat" value="{{ seat.key }}" data-row="{{ seat.row }}" data-num="{{ seat.num }}"{% if seat.taken %} disabled{% endif %}{% if seat.checked %} checked{% endif %}>
+                                <span>{{ seat.num }}</span>
+                            </label>
+                            {% endfor %}
+                            <span class="rn">{{ row.number }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="legend">
+                    <span><i></i> Свободно</span><span><i class="l-sel"></i> Выбрано</span><span><i class="l-occ"></i> Занято</span>
+                </div>
+            </div>
+
+            <aside class="panel summary">
+                <h3>Ваш заказ</h3>
+                <div class="show"><b>{{ perf.title }}</b><small>{{ session.starts_at|date:"j E, H:i" }} · {{ hall.name }}</small><small>{{ session.price }} сом за место</small></div>
+                {% for e in errors %}<div class="alert alert-error">{{ e }}</div>{% endfor %}
+                <div class="picked" id="picked"><span class="none">Места не выбраны</span></div>
+                <div class="total"><span>Итого</span><b class="gold-text" id="total">0 сом</b></div>
+                <div class="field"><label for="name">Ваше имя</label><input class="input" id="name" name="name" value="{{ form.name }}" autocomplete="name" required placeholder="Айбек"></div>
+                <div class="field"><label for="phone">Телефон (WhatsApp)</label><input class="input" id="phone" name="phone" value="{{ form.phone }}" type="tel" inputmode="tel" autocomplete="tel" required placeholder="0700 123 456"></div>
+                <input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+                <button type="submit" class="btn btn-wa btn-lg btn-block" id="submitBtn" {% if not session.is_bookable %}disabled{% endif %}><svg class="i i-fill"><use href="#i-wa"/></svg> Оформить в WhatsApp</button>
+                <p class="fineprint">Места закрепляются за вами на {{ site.hold_minutes }} минут. Оплата — в чате с кассой.</p>
+            </aside>
+        </form>
+    </div>
+</section>
+{% endblock %}
+{% block scripts %}{% load static %}<script src="{% static 'js/seats.js' %}" defer></script>{% endblock %}

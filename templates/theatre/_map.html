@@ -1,0 +1,4 @@
+<div class="map">
+{% if site.map_embed_url %}<iframe src="{{ site.map_embed_url }}" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" title="Карта"></iframe>
+{% else %}<div class="ph">{{ site.address }}</div>{% endif %}
+</div>

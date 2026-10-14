@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block title %}Правила посещения{% endblock %}
+{% block content %}
+<section class="section page-top"><div class="container">
+    <div class="section-head"><span class="eyebrow">Зрителям</span><h1>Правила посещения</h1>{% include "theatre/_orn.html" %}</div>
+    <ul class="rules">{% for r in site.rules_list %}<li class="reveal"><svg class="i"><use href="#i-check"/></svg><span>{{ r }}</span></li>{% endfor %}</ul>
+</div></section>
+{% endblock %}

@@ -1,0 +1,6 @@
+<div class="contact-list">
+    <div class="contact-item"><div class="contact-ico"><svg class="i"><use href="#i-pin"/></svg></div><div><h4>Адрес</h4><p>{{ site.address }}</p></div></div>
+    <div class="contact-item"><div class="contact-ico"><svg class="i"><use href="#i-phone"/></svg></div><div><h4>Телефон кассы</h4><a href="tel:{{ site.phone }}">{{ site.phone }}</a></div></div>
+    <div class="contact-item"><div class="contact-ico"><svg class="i"><use href="#i-clock"/></svg></div><div><h4>Режим работы кассы</h4><p>{{ site.work_hours }}</p></div></div>
+    {% if site.email %}<div class="contact-item"><div class="contact-ico"><svg class="i"><use href="#i-mail"/></svg></div><div><h4>Email</h4><a href="mailto:{{ site.email }}">{{ site.email }}</a></div></div>{% endif %}
+</div>

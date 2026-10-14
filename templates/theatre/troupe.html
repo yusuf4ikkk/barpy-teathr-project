@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block title %}Труппа{% endblock %}
+{% block content %}
+<section class="section page-top"><div class="container">
+    <div class="section-head"><span class="eyebrow">Коллектив</span><h1>Наша труппа</h1>{% include "theatre/_orn.html" %}</div>
+    {% if actors %}<div class="grid grid-cards">{% for a in actors %}{% include "theatre/_actor.html" %}{% endfor %}</div>{% else %}<div class="empty">Список артистов скоро появится.</div>{% endif %}
+</div></section>
+{% endblock %}

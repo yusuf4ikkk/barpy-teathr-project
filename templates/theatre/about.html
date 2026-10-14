@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}О театре{% endblock %}
+{% block content %}
+<section class="section page-top">
+    <div class="container">
+        <div class="section-head"><span class="eyebrow">История</span><h1>О театре</h1>{% include "theatre/_orn.html" %}</div>
+        <div class="split">
+            <div class="reveal">
+                <h2 class="serif gold-text" style="font-size:clamp(1.8rem,4vw,2.6rem);margin-bottom:1.3rem">{{ site.theatre_name }}</h2>
+                <div class="prose">{% for para in site.about_paragraphs %}<p>{{ para }}</p>{% endfor %}</div>
+            </div>
+            <div class="photo-frame reveal"><img src="{% if site.about_image %}{{ site.about_image.url }}{% else %}{% static 'img/stage-3.jpg' %}{% endif %}" alt="Театр" loading="lazy"></div>
+        </div>
+    </div>
+</section>
+<section class="section section-alt">
+    <div class="container">
+        <div class="stats">
+            <div class="stat reveal"><b class="gold-text">{{ years }}</b><span>лет на сцене</span></div>
+            <div class="stat reveal"><b class="gold-text">{{ site.stat_productions }}</b><span>постановок</span></div>
+            <div class="stat reveal"><b class="gold-text">{{ site.stat_actors }}</b><span>артистов</span></div>
+            <div class="stat reveal"><b class="gold-text">{{ site.stat_audience }}</b><span>зрителей в год</span></div>
+        </div>
+    </div>
+</section>
+{% if actors %}
+<section class="section">
+    <div class="container">
+        <div class="head-row reveal"><div class="section-head"><span class="eyebrow">Коллектив</span><h2>Ведущие артисты</h2></div><a class="btn btn-ghost" href="{% url 'theatre:troupe' %}">Вся труппа</a></div>
+        <div class="grid grid-cards">{% for a in actors %}{% include "theatre/_actor.html" %}{% endfor %}</div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}
